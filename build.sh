@@ -56,7 +56,7 @@ rsync -a --delete $RULESDIR .
 # delete bad patches
 quilt delete -r title-bar-default-system.patch-v35 || true
 quilt delete -r search-credit.patch || true
-quilt delete -r configuration-directory.patch || true
+#quilt delete -r configuration-directory.patch || true
 
 # apply patches
 quilt import -f $SRC/disable-new-avatar-menu.patch || true
