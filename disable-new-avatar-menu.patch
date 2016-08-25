@@ -1,0 +1,12 @@
+Index: chromium-ubuntu-build/chrome/browser/profiles/avatar_menu.cc
+===================================================================
+--- chromium-ubuntu-build.orig/chrome/browser/profiles/avatar_menu.cc
++++ chromium-ubuntu-build/chrome/browser/profiles/avatar_menu.cc
+@@ -89,6 +89,7 @@ AvatarMenu::Item::~Item() {
+ 
+ // static
+ bool AvatarMenu::ShouldShowAvatarMenu() {
++  return false;
+   // TODO: Eliminate this ifdef. Add a delegate interface for the menu which
+   // would also help remove the Browser dependency in AvatarMenuActions
+   // implementations.
