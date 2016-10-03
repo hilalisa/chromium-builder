@@ -9,6 +9,7 @@ RULESREPO=$UTILSDIR/chromium-ubuntu-build
 RULESDIR=$RULESREPO/debian
 
 RULESREPOPATH="https://github.com/saiarcot895/chromium-ubuntu-build.git"
+RULESREPOBRANCH="branch-2840"
 
 set -ex
 
@@ -19,11 +20,15 @@ if [ ! -d $RULESREPO ]; then
   pushd $UTILSDIR &> /dev/null
   git clone $RULESREPOPATH
   popd &> /dev/null
-else
-  pushd $RULESREPO &> /dev/null
-  git pull
-  popd &> /dev/null
 fi
+
+pushd $RULESREPO &> /dev/null
+git reset --hard
+git clean -f -x -d
+git checkout master
+git pull
+git checkout $RULESREPOBRANCH
+popd &> /dev/null
 
 # read chrome version
 CHROMEVER=$(head -1 $RULESDIR/changelog|awk -F\( '{print $2}'|sed -e 's/-.*//')
@@ -54,8 +59,8 @@ fi
 rsync -a --delete $RULESDIR .
 
 # delete bad patches
-quilt delete -r title-bar-default-system.patch-v35 || true
-quilt delete -r search-credit.patch || true
+#quilt delete -r title-bar-default-system.patch-v35 || true
+#quilt delete -r search-credit.patch || true
 #quilt delete -r configuration-directory.patch || true
 
 # apply patches
@@ -67,10 +72,7 @@ export GOOGLEAPI_APIKEY_UBUNTU=AIzaSyAQfxPJiounkhOjODEO5ZieffeBv6yft2Q
 export GOOGLEAPI_CLIENTID_UBUNTU=424119844901.apps.googleusercontent.com
 export GOOGLEAPI_CLIENTSECRET_UBUNTU=AIienwDlGIIsHoKnNHmWGXyJ
 
-# fix issues
-#dpkg-buildpackage -T override_dh_clean
-
 # build
-dpkg-buildpackage
+dpkg-buildpackage -rfakeroot -us -uc -b
 
 popd &> /dev/null
